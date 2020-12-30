@@ -38,15 +38,15 @@
 </template>
 
 <script>
-import List from '@/components/preview/list'
-import _ from 'lodash'
 import path from 'path'
 import os from 'os'
 import fs from 'fs'
+import _ from 'lodash'
+import List from '@/components/preview/list'
 
 export default {
   components: {
-    'List': List
+    List
   },
   data () {
     return {
@@ -303,16 +303,16 @@ export default {
         <style></style>
       `
 
-      //console.log('THIS.vueCode', this.vueCode)
+      // console.log('THIS.vueCode', this.vueCode)
 
-      if(this.createType == 'preview') {
-        fs.writeFile('./src/renderer/components/preview/list.vue', this.vueCode, (err) => {
+      if (this.createType == 'preview') {
+        fs.writeFile('./src/renderer/components/preview/list.vue', this.vueCode, err => {
           console.log('ERR', err)
         })
 
-        this.$refs['preview'].show()
+        this.$refs.preview.show()
       } else {
-        fs.writeFile(`${this.form.directoryPath}/${this.form.fileName}`, this.vueCode, (err) => {
+        fs.writeFile(`${this.form.directoryPath}/${this.form.fileName}`, this.vueCode, err => {
           console.log('ERR', err)
         })
       }

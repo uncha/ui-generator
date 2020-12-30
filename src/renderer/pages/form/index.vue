@@ -35,15 +35,15 @@
 </template>
 
 <script>
-import Form from '@/components/preview/form.vue'
-import _ from 'lodash'
 import path from 'path'
 import os from 'os'
 import fs from 'fs'
+import _ from 'lodash'
+import Form from '@/components/preview/form.vue'
 
 export default {
   components: {
-    'Form': Form
+    Form
   },
   data () {
     return {
@@ -58,15 +58,21 @@ export default {
             key: 'ttl',
             label: '제목',
             type: 'input',
-            required: true,
             requiredOptions: {
-              minLength:30
+              required: {
+                message: '제목을 입력해 주세요.'
+              },
+              minLength: {
+                value: 3,
+                message: '제목은 3글자 이상 입력하셔야 합니다.'
+              }
             },
+            maxLength: 50,
             placeholder: '제목을 입력해 주세요.'
           }
         ],
         config: {
-          labelCols:4,
+          labelCols: 4
         }
       },
       options: {
@@ -91,50 +97,116 @@ export default {
     onError (e) {
       console.log('E', e)
     },
+    getInput (item) {
+      let value = ''
+
+      if (item.requiredOptions) {
+        value += `
+                <b-form-input
+                  type="text"
+                  maxlength="${item.maxLength}"
+                  :placeholder="'${item.placeholder}'"
+                  v-model="$v.form.${item.key}.$model"
+                  :state="validateState('${item.key}')"
+                />
+                <b-form-invalid-feedback>
+                  입력해주세요.
+                </b-form-invalid-feedback>
+        `
+      } else {
+        value = `
+              <b-form-input
+                type="text"
+                maxlength="${item.maxLength}"
+                :placeholder="'${item.placeholder}'"
+                v-model="$v.form.${item.key}.$model"
+              />
+            `
+      }
+
+      return value
+    },
     getFormGroups () {
-      return `
-        <b-form-group :label="'Base URL(Preview)'" :label-cols="2">
-          <b-input></b-input>
-        </b-form-group>
-      `
+      let formGroups = ``
+
+      _.forEach(this.form.rows, (item, i) => {
+        formGroups += `<b-form-group :label="'${item.label}'" :label-cols="${this.form.config.labelCols}">`
+
+        switch (item.type) {
+        case 'input':
+          formGroups += this.getInput(item)
+          break
+        }
+
+        formGroups += `
+          </b-form-group>
+        `
+      })
+
+      return formGroups
     },
     createVueCode () {
       const closeScript = '</' + 'script' + '>'
 
-      let data = {
-
+      const data = {
+        form: {}
       }
+
+      let validationsForm = `{`
+      _.forEach(this.form.rows, (item, i) => {
+        data.form[item.key] = ''
+
+        validationsForm += `${item.key}:{required},`
+      })
+      validationsForm += `}`
 
       this.vueCode = `
         <template>
           <b-form @submit.prevent="onSubmit">
             ${this.getFormGroups()}
+            <button type="submit" class="btn btn-primary">전송</button>
           </b-form>
         </template>
 
         <script>
+          import { validationMixin } from 'vuelidate';
+          import { required, minLength, alphaNum } from 'vuelidate/lib/validators';
+
           export default {
+	          mixins: [validationMixin],
+            validations: {
+          		form: ${validationsForm}
+            },
             data () {
-              return ${data}
+              return ${JSON.stringify(data)}
             },
             mounted () {
 
             },
             methods: {
-
+          		validateState(name) {
+          			const { $dirty, $error } = this.$v.form[name];
+          			return $dirty ? !$error : null;
+          		},
+          		onSubmit() {
+          			this.$v.form.$touch();
+          			if (this.$v.form.$anyError) {
+          				return;
+          			}
+          		},
             }
           }
         ${closeScript}
       `
 
-      if(this.createType == 'preview') {
-        fs.writeFile('./src/renderer/components/preview/form.vue', this.vueCode, (err) => {
+      if (this.createType == 'preview') {
+        fs.writeFile('./src/renderer/components/preview/form.vue', this.vueCode, err => {
           console.log('ERR', err)
         })
 
-        this.$refs['preview'].show()
+        this.$refs.preview.show()
       } else {
-        fs.writeFile(`${this.form.directoryPath}/${this.form.fileName}`, this.vueCode, (err) => {
+        fs.writeFile(`${this.form.directoryPath}/${this.form.fileName}`, this.vueCode, err => {
           console.log('ERR', err)
         })
       }
