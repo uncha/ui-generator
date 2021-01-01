@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node .electron-nuxt/dev.js",
     "build": "node .electron-nuxt/build.js",
-    "package":"asar pack App-darwin-x64/App.app/Contents/Resources/app App-darwin-x64/App.app/Contents/Resources/app.asar",
+    "package": "asar pack App-darwin-x64/App.app/Contents/Resources/app App-darwin-x64/App.app/Contents/Resources/app.asar",
     "test": "",
     "lint": "node_modules/.bin/eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter ./src",
     "lint:fix": "yarn run lint -- --fix",
@@ -55,6 +55,7 @@
     "lodash": "^4.17.20",
     "v-jsoneditor": "^1.4.2",
     "vue": "^2.6.12",
-    "vue-prism-editor": "^1.2.2"
+    "vue-prism-editor": "^1.2.2",
+    "vuelidate": "^0.7.6"
   }
 }
