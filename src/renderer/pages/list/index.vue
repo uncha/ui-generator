@@ -32,7 +32,7 @@
     </b-form>
 
     <b-modal ref="preview" hide-footer centered :title="'Preview'" :size="'lg'">
-      <List />
+      <List :baseForm="form" />
     </b-modal>
   </div>
 </template>
@@ -306,9 +306,9 @@ export default {
       // console.log('THIS.vueCode', this.vueCode)
 
       if (this.createType == 'preview') {
-        fs.writeFile('./src/renderer/components/preview/list.vue', this.vueCode, err => {
-          console.log('ERR', err)
-        })
+        // fs.writeFile('./src/renderer/components/preview/list.vue', this.vueCode, err => {
+        //   console.log('ERR', err)
+        // })
 
         this.$refs.preview.show()
       } else {

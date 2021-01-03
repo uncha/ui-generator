@@ -29,7 +29,7 @@
     </b-form>
 
     <b-modal ref="preview" hide-footer centered :title="'Preview'" :size="'lg'">
-      <Form />
+      <Form :baseForm="form"></Form>
     </b-modal>
   </div>
 </template>
@@ -38,12 +38,11 @@
 import path from 'path'
 import os from 'os'
 import fs from 'fs'
-import _ from 'lodash'
 import Form from '@/components/preview/form.vue'
 
 export default {
   components: {
-    Form
+    Form,
   },
   data () {
     return {
@@ -68,7 +67,22 @@ export default {
               }
             },
             maxLength: 50,
-            placeholder: '제목을 입력해 주세요.'
+            placeholder: '제목을 입력해 주세요.',
+            value: "''"
+          },
+          {
+            key: 'beginDt',
+            label: '시작일',
+            type: 'date',
+            value: "moment().format('YYYY-MM-DD')"
+          },
+          {
+            key: 'select',
+            label: '선택메뉴',
+            type: 'async-select',
+            apiUrl: '',
+            params: {},
+            selectAll: true
           }
         ],
         config: {
@@ -80,6 +94,18 @@ export default {
       },
       vueCode: ``,
       createType: ''
+    }
+  },
+  computed: {
+    html () {
+      return `
+      <b-form>
+      <b-form-group :label="'File Name'" :label-cols="2">
+        test
+      </b-form-group>
+      <button type="button" class="btn btn-primary">{{options.mode}}</button>
+      </b-form>
+      `
     }
   },
   mounted () {
@@ -126,6 +152,16 @@ export default {
 
       return value
     },
+    getDate (item) {
+      const value = `
+            <b-form-datepicker
+            :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
+            locale="kr"
+            ></b-form-datepicker>
+      `
+
+      return value
+    },
     getFormGroups () {
       let formGroups = ``
 
@@ -135,6 +171,9 @@ export default {
         switch (item.type) {
         case 'input':
           formGroups += this.getInput(item)
+          break
+        case 'date':
+          formGroups += this.getDate(item)
           break
         }
 
@@ -148,14 +187,23 @@ export default {
     createVueCode () {
       const closeScript = '</' + 'script' + '>'
 
-      const data = {
-        form: {}
-      }
+      let data = `{form: {`
+
+      _.forEach(this.form.rows, (item, i) => {
+        switch (item.type) {
+        case 'input':
+          data += `${item.key}:${item.value},`
+          break
+        case 'date':
+          data += `${item.key}:${item.value},`
+          break
+        }
+      })
+
+      data += `}}`
 
       let validationsForm = `{`
       _.forEach(this.form.rows, (item, i) => {
-        data.form[item.key] = ''
-
         validationsForm += `${item.key}:{required},`
       })
       validationsForm += `}`
@@ -178,7 +226,7 @@ export default {
           		form: ${validationsForm}
             },
             data () {
-              return ${JSON.stringify(data)}
+              return ${data}
             },
             mounted () {
 
@@ -200,9 +248,9 @@ export default {
       `
 
       if (this.createType == 'preview') {
-        fs.writeFile('./src/renderer/components/preview/form.vue', this.vueCode, err => {
-          console.log('ERR', err)
-        })
+        // fs.writeFile('./src/renderer/components/preview/form.vue', this.vueCode, err => {
+        //   console.log('ERR', err)
+        // })
 
         this.$refs.preview.show()
       } else {
