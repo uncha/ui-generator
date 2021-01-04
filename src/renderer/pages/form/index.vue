@@ -29,7 +29,7 @@
     </b-form>
 
     <b-modal ref="preview" hide-footer centered :title="'Preview'" :size="'lg'">
-      <Form :baseForm="form"></Form>
+      <Form :base-form="form" />
     </b-modal>
   </div>
 </template>
@@ -42,7 +42,7 @@ import Form from '@/components/preview/form.vue'
 
 export default {
   components: {
-    Form,
+    Form
   },
   data () {
     return {
@@ -68,21 +68,6 @@ export default {
             },
             maxLength: 50,
             placeholder: '제목을 입력해 주세요.',
-<<<<<<< HEAD
-            value: ''
-          },
-          {
-            type: 'date',
-            key: 'schBeginDt',
-            label: '시작일',
-            value: "moment().format('YYYY-MM-DD')"
-          },
-          {
-            type: 'date',
-            key: 'schEndDt',
-            label: '종료일',
-            value: "moment().format('YYYY-MM-DD')"
-=======
             value: "''"
           },
           {
@@ -98,7 +83,6 @@ export default {
             apiUrl: '',
             params: {},
             selectAll: true
->>>>>>> 86ba8af9ff6cf2b037774867ae0f39d5ce5a4326
           }
         ],
         config: {
@@ -170,14 +154,10 @@ export default {
     },
     getDate (item) {
       const value = `
-<<<<<<< HEAD
-        <b-form-datepicker v-model="${item.key}"></b-form-datepicker>
-=======
             <b-form-datepicker
             :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
             locale="kr"
             ></b-form-datepicker>
->>>>>>> 86ba8af9ff6cf2b037774867ae0f39d5ce5a4326
       `
 
       return value
@@ -206,39 +186,11 @@ export default {
     },
     createVueCode () {
       const closeScript = '</' + 'script' + '>'
-
-<<<<<<< HEAD
-      let data = `
-        {
-          form: {
-      `
-=======
       let data = `{form: {`
->>>>>>> 86ba8af9ff6cf2b037774867ae0f39d5ce5a4326
 
       _.forEach(this.form.rows, (item, i) => {
         switch (item.type) {
         case 'input':
-<<<<<<< HEAD
-          // data.form[item.key] = item.value
-          data += `${item.key}:${item.value}`
-          break
-        case 'date':
-          // data.form[item.key] = JSON.parse(item.value)
-          // data += `${item.key}:${JSON.parse(item.value)}`
-          data += `${item.key}:${item.value}`
-          break
-        }
-      })
-
-      data += `
-          }
-        }
-      `
-
-      let validationsForm = `{`
-
-=======
           data += `${item.key}:${item.value},`
           break
         case 'date':
@@ -250,7 +202,6 @@ export default {
       data += `}}`
 
       let validationsForm = `{`
->>>>>>> 86ba8af9ff6cf2b037774867ae0f39d5ce5a4326
       _.forEach(this.form.rows, (item, i) => {
         validationsForm += `${item.key}:{required},`
       })

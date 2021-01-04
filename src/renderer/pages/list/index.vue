@@ -32,7 +32,7 @@
     </b-form>
 
     <b-modal ref="preview" hide-footer centered :title="'Preview'" :size="'lg'">
-      <List :baseForm="form" />
+      <List :base-form="form" />
     </b-modal>
   </div>
 </template>

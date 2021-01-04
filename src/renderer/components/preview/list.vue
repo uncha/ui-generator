@@ -13,14 +13,14 @@
               maxlength="20"
               placeholder="검색어를 입력해 주세요."
               autocomplete="off"
-            ></b-form-input>
+            />
             <template #append>
-              <b-button variant="primary" @click="loadData"><b-icon icon="search"></b-icon></b-button>
+              <b-button variant="primary" @click="loadData"><b-icon icon="search" /></b-button>
             </template>
           </b-input-group>
         </b-form-group>
         <b-form-group :label="'시작일'" :label-cols="2">
-          <b-form-datepicker v-model="params.schBeginRegistDt" @input="loadData" :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"></b-form-datepicker>
+          <b-form-datepicker v-model="params.schBeginRegistDt" :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }" @input="loadData" />
         </b-form-group>
       </div>
       <div class="row">
@@ -50,55 +50,55 @@
         :per-page="params.pgSz"
         align="center"
         @input="loadData"
-      ></b-pagination>
+      />
     </div>
   </div>
 </template>
 
 <script>
-  export default {
-    data () {
-      return {
-        items:{},
-        params:{},
-        fields:[],
-      }
-    },
-    props: {
-      baseForm: {
-        type:Object,
-        required:true
-      }
-    },
-    created () {
-      if(this.$route.query) {
-        this.params = this.$route.query
-      }
+export default {
+  props: {
+    baseForm: {
+      type: Object,
+      required: true
+    }
+  },
+  data () {
+    return {
+      items: {},
+      params: {},
+      fields: []
+    }
+  },
+  created () {
+    if (this.$route.query) {
+      this.params = this.$route.query
+    }
 
-      this.fields = this.baseForm.fields
-      this.items = {
-        [`${this.baseForm.config.list}`]: [],
-        [`${this.baseForm.config.totalSize}`]: 1,
-        [`${this.baseForm.config.number}`]: 1
-      }
-      this.params = {
-        [`${this.baseForm.config.params.pageSize}`]: 10,
-        [`${this.baseForm.config.params.currentPage}`]: 1
-      }
-    },
-    mounted () {
-      this.loadData();
-    },
-    methods: {
-      loadData () {
-        this.$axios.$get(`${this.baseForm.previewBaseUrl}${this.baseForm.url}`, {
-          params:this.params
-        }).then(res=>{
-          this.items = res.data
-        })
-      },
+    this.fields = this.baseForm.fields
+    this.items = {
+      [`${this.baseForm.config.list}`]: [],
+      [`${this.baseForm.config.totalSize}`]: 1,
+      [`${this.baseForm.config.number}`]: 1
+    }
+    this.params = {
+      [`${this.baseForm.config.params.pageSize}`]: 10,
+      [`${this.baseForm.config.params.currentPage}`]: 1
+    }
+  },
+  mounted () {
+    this.loadData()
+  },
+  methods: {
+    loadData () {
+      this.$axios.$get(`${this.baseForm.previewBaseUrl}${this.baseForm.url}`, {
+        params: this.params
+      }).then(res => {
+        this.items = res.data
+      })
     }
   }
+}
 </script>
 
 <style></style>
