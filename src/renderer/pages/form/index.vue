@@ -55,9 +55,9 @@ export default {
         fileName: 'form.vue',
         rows: [
           {
+            type: 'input',
             key: 'ttl',
             label: '제목',
-            type: 'input',
             requiredOptions: {
               required: {
                 message: '제목을 입력해 주세요.'
@@ -68,7 +68,20 @@ export default {
               }
             },
             maxLength: 50,
-            placeholder: '제목을 입력해 주세요.'
+            placeholder: '제목을 입력해 주세요.',
+            value: ''
+          },
+          {
+            type: 'date',
+            key: 'schBeginDt',
+            label: '시작일',
+            value: "moment().format('YYYY-MM-DD')"
+          },
+          {
+            type: 'date',
+            key: 'schEndDt',
+            label: '종료일',
+            value: "moment().format('YYYY-MM-DD')"
           }
         ],
         config: {
@@ -126,6 +139,13 @@ export default {
 
       return value
     },
+    getDate (item) {
+      const value = `
+        <b-form-datepicker v-model="${item.key}"></b-form-datepicker>
+      `
+
+      return value
+    },
     getFormGroups () {
       let formGroups = ``
 
@@ -135,6 +155,9 @@ export default {
         switch (item.type) {
         case 'input':
           formGroups += this.getInput(item)
+          break
+        case 'date':
+          formGroups += this.getDate(item)
           break
         }
 
@@ -148,16 +171,36 @@ export default {
     createVueCode () {
       const closeScript = '</' + 'script' + '>'
 
-      const data = {
-        form: {}
-      }
+      let data = `
+        {
+          form: {
+      `
+
+      _.forEach(this.form.rows, (item, i) => {
+        switch (item.type) {
+        case 'input':
+          // data.form[item.key] = item.value
+          data += `${item.key}:${item.value}`
+          break
+        case 'date':
+          // data.form[item.key] = JSON.parse(item.value)
+          // data += `${item.key}:${JSON.parse(item.value)}`
+          data += `${item.key}:${item.value}`
+          break
+        }
+      })
+
+      data += `
+          }
+        }
+      `
 
       let validationsForm = `{`
-      _.forEach(this.form.rows, (item, i) => {
-        data.form[item.key] = ''
 
+      _.forEach(this.form.rows, (item, i) => {
         validationsForm += `${item.key}:{required},`
       })
+
       validationsForm += `}`
 
       this.vueCode = `

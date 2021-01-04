@@ -14,14 +14,13 @@
                 </b-form-invalid-feedback>
         
           </b-form-group>
-        <b-form-group :label="'제목2'" :label-cols="4">
-              <b-form-input
-                type="text"
-                maxlength="50"
-                :placeholder="'제목을 입력해 주세요.'"
-                v-model="$v.form.ttl2.$model"
-              />
-            
+        <b-form-group :label="'시작일'" :label-cols="4">
+        <b-form-datepicker v-model="schBeginDt"></b-form-datepicker>
+      
+          </b-form-group>
+        <b-form-group :label="'종료일'" :label-cols="4">
+        <b-form-datepicker v-model="schEndDt"></b-form-datepicker>
+      
           </b-form-group>
         
             <button type="submit" class="btn btn-primary">전송</button>
@@ -35,10 +34,10 @@
           export default {
 	          mixins: [validationMixin],
             validations: {
-          		form: {ttl:{required},ttl2:{required},}
+          		form: {ttl:{required},schBeginDt:{required},schEndDt:{required},}
             },
             data () {
-              return {"form":{"ttl":"","ttl2":""}}
+              return "\n        {\n          form: {\n      ttl:schBeginDt:moment().format('YYYY-MM-DD')schEndDt:moment().format('YYYY-MM-DD')\n          }\n        }\n      "
             },
             mounted () {
 
