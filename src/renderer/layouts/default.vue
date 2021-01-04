@@ -10,10 +10,14 @@
 <script>
 import appHeader from '@/components/header'
 import $ from 'jquery'
+import _ from 'lodash'
+import moment from 'moment'
 export default {
   components: { appHeader },
   mounted () {
     window.$ = $
+    window._ = _
+    window.moment = moment
   }
 }
 </script>
