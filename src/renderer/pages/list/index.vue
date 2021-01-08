@@ -108,6 +108,7 @@ export default {
           totalSize: 'totalSize',
           number: 'number',
           list: 'list',
+          labelCols: 4,
           params: {
             currentPage: 'pg',
             pageSize: 'pgSz'
